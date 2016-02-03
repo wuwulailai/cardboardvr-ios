@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "EDFFEE58A17C1EBE75F750230E9F223862BB84E3",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "77F79FECD53C7A1AFDE0ED0AAE2A66FC3D4EC759" : 0,
+    "EDFFEE58A17C1EBE75F750230E9F223862BB84E3" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "FB9901C1-553E-411E-82BF-949CA819D0E9",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "77F79FECD53C7A1AFDE0ED0AAE2A66FC3D4EC759" : "..\/..\/Eleven",
+    "EDFFEE58A17C1EBE75F750230E9F223862BB84E3" : "CardboardVR-iOS"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "CardboardVR-iOS",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "CardboardVR-iOS.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/masterweb121\/Eleven.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "77F79FECD53C7A1AFDE0ED0AAE2A66FC3D4EC759"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/equinox2k\/CardboardVR-iOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "EDFFEE58A17C1EBE75F750230E9F223862BB84E3"
+    }
+  ]
+}
