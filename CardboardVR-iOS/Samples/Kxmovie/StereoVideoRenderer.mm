@@ -33,6 +33,7 @@ static NSMutableDictionary * gHistory;
     BOOL                _interrupted;
     KxMovieDecoder      *_decoder;
     KxMovieGLView       *_glView;
+    KxVideoFrame        *_frame;
     UIImageView         *_imageView;
     NSDictionary        *_parameters;
     
@@ -55,6 +56,8 @@ static NSMutableDictionary * gHistory;
     BOOL                _buffered;
     
     EAGLContext         *_context;
+    
+    CGFloat             _interval;
 }
 
 @property (readwrite) BOOL decoding;
@@ -337,7 +340,7 @@ static NSMutableDictionary * gHistory;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         //渲染
-//        [self tick];
+        [self tick];
     });
     
     if (_decoder.validAudio)
@@ -693,6 +696,17 @@ static NSMutableDictionary * gHistory;
         }
     });
 }
+- (KxVideoFrame *)getVideoFrame
+{
+    return _frame;
+}
+
+- (void) playOneFrame
+{
+    _interval = 0;
+    if (!_buffered)
+        _interval = [self presentFrame];
+}
 
 - (void) tick
 {
@@ -708,10 +722,20 @@ static NSMutableDictionary * gHistory;
 //        [_activityIndicatorView stopAnimating];
     }
     
-    CGFloat interval = 0;
-    if (!_buffered)
-        interval = [self presentFrame];
-    
+//    CGFloat interval = 0;
+//    if (!_buffered)
+//        interval = [self presentFrame];
+    if (!_buffered) {
+        @synchronized(_videoFrames) {
+            
+            if (_videoFrames.count > 0) {
+                
+                _frame = _videoFrames[0];
+                [_videoFrames removeObjectAtIndex:0];
+                _bufferedDuration -= _frame.duration;
+            }
+        }
+    }
     if (self.playing) {
         
         const NSUInteger leftFrames =
@@ -740,17 +764,17 @@ static NSMutableDictionary * gHistory;
             [self asyncDecodeFrames];
         }
         
-//        const NSTimeInterval correction = [self tickCorrection];
-//        const NSTimeInterval time = MAX(interval + correction, 0.01);
-//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC);
-//        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-//            [self tick];
-//        });
+        const NSTimeInterval correction = [self tickCorrection];
+        const NSTimeInterval time = MAX(_interval + correction, 0.01);
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, time * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self tick];
+        });
     }
     
-    if ((_tickCounter++ % 3) == 0) {
+//     if ((_tickCounter++ % 3) == 0) {
 //        [self updateHUD];
-    }
+//     }
 }
 
 - (CGFloat) tickCorrection
@@ -790,18 +814,18 @@ static NSMutableDictionary * gHistory;
     
     if (_decoder.validVideo) {
         
-        KxVideoFrame *frame;
-        
-        @synchronized(_videoFrames) {
-            
-            if (_videoFrames.count > 0) {
-                
-                frame = _videoFrames[0];
-                [_videoFrames removeObjectAtIndex:0];
-                _bufferedDuration -= frame.duration;
-            }
-        }
-        
+//        KxVideoFrame *frame;
+//        
+//        @synchronized(_videoFrames) {
+//            
+//            if (_videoFrames.count > 0) {
+//                
+//                frame = _videoFrames[0];
+//                [_videoFrames removeObjectAtIndex:0];
+//                _bufferedDuration -= frame.duration;
+//            }
+//        }
+        KxVideoFrame *frame = _frame;
         if (frame)
             interval = [self presentVideoFrame:frame];
         
@@ -830,7 +854,6 @@ static NSMutableDictionary * gHistory;
 - (CGFloat) presentVideoFrame: (KxVideoFrame *) frame
 {
     if (_glView) {
- //        [_glView render];
        [_glView render:frame];
         
     } else {
@@ -968,11 +991,12 @@ static NSMutableDictionary * gHistory;
 }
 - (void)prepareNewFrameWithHeadTransform:(HeadTransform *)headTransform
 {
+    //取视频帧
 }
 
 - (void)drawEyeWithTransform:(EyeTransform *)eyeTransform eyeType:(EyeParamsType)eyeType
 {
-    [self tick];
+    [self playOneFrame];
     checkGLError();
 }
 
